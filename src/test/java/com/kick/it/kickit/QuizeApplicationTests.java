@@ -1,0 +1,13 @@
+package com.kick.it.kickit;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class QuizeApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
