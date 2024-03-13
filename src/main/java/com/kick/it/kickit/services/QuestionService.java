@@ -20,4 +20,6 @@ public interface QuestionService {
     public List<Question> getQuestionByQuizId(Long quizId);
 
     public Question getQuestionByQuestionId(Long questionId);
+
+    public void addToQuiz(String[] quizIds);
 }

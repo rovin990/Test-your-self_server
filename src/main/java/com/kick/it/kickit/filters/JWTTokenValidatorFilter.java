@@ -8,7 +8,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -39,7 +38,15 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
                         AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid Token received!");
+                System.out.println(e.getMessage());
+
+
+
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setHeader(Security_Constant.JWT_TOKEN_EXPIRE,"Invalid Token");
+                response.getWriter().write("Invalid Token");
+                return;
+//                throw new InvalidTokenException("Invalid Token received!");
             }
 
         }
@@ -49,5 +56,8 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getServletPath().equals("/user");
+    }
+
+    private void handleInvalidCorrelationId(HttpServletResponse response) throws IOException {
     }
 }

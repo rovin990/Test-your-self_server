@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class UserQuizDetailServiceImpl implements UserQuizDetailService {
     public UserQuizDetail createTestResponse(UserQuizDetail userQuizDetail){
         Authentication principal =SecurityContextHolder.getContext().getAuthentication();
 
-        System.out.println("Hello"+principal.getName());
+        //System.out.println("Hello"+principal.getName());
 
         userQuizDetail.setCreatedBy(principal.getName());
         userQuizDetail.setUsername(principal.getName());
@@ -43,7 +44,7 @@ public class UserQuizDetailServiceImpl implements UserQuizDetailService {
 
 
 
-        System.out.println(userQuizDetail);
+        System.out.println("Return value"+userQuizDetail);
         return userQuizDetailRepository.save(userQuizDetail);
 //       return userQuizDetail;
     }
@@ -55,7 +56,7 @@ public class UserQuizDetailServiceImpl implements UserQuizDetailService {
     }
 
     @Override
-    public List<UserQuizDetail> getAllTestResponse() {
+    public List<UserQuizDetail> getAllAttemptedQuizResponse() {
         Authentication principal =SecurityContextHolder.getContext().getAuthentication();
         return userQuizDetailRepository.findAllByUsername(principal.getName());
     }
@@ -66,9 +67,11 @@ public class UserQuizDetailServiceImpl implements UserQuizDetailService {
         int correct=0;
         int wrong=0;
         double markOfEachQuestion= ((quiz.getMaxMark()/quiz.getNoOfQuestion()));
+//        List<Responses> responses= new ArrayList<>();
 
         for (Responses response: userQuizDetail.getResponses()){
             Question local = questionService.getQuestionByQuestionId(response.getQuestionId());
+            response.setCorrectAnswer(local.getAnswer());
             if(local.getAnswer().equalsIgnoreCase(response.getAnswer())){
                 score+=markOfEachQuestion;
                 correct++;
@@ -84,5 +87,12 @@ public class UserQuizDetailServiceImpl implements UserQuizDetailService {
         userQuizDetail.setScore(score);
         userQuizDetail.setCorrectQuestion(correct);
         userQuizDetail.setWrongQuestion(wrong);
+
+       int attemptNo= findAttemptNo(userQuizDetail.getQuizId(),userQuizDetail.getUsername());
+       userQuizDetail.setAttemptNo((attemptNo+1));
+    }
+
+    private int findAttemptNo(Long quizId,String username){
+       return userQuizDetailRepository.countByQuizIdAndUsername(quizId,username);
     }
 }

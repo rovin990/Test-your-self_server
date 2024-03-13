@@ -37,7 +37,7 @@ public class ProjectSecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        config.setAllowedOrigins(Collections.singletonList("https://quizmaster.kickthepast.com/,http://localhost:3000"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
@@ -46,14 +46,16 @@ public class ProjectSecurityConfig {
                         return config;
                     }
                 }))
-                .csrf(csrf-> csrf.csrfTokenRequestHandler(requestAttributeHandler).ignoringRequestMatchers("/register","/image","/category","/quiz","/quiz/**","/question","/question/**","/test-response")
+                .csrf(csrf-> csrf.csrfTokenRequestHandler(requestAttributeHandler).ignoringRequestMatchers("/register","/image/options","/image/question","/image","/category","/quiz","/quiz/**","/question","/question/**","/test-response")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(
                         (requests) -> requests
                                 .requestMatchers("/category","/question","/quiz","/user","/image","/test-response").authenticated()
-                                .requestMatchers("/quiz/active","quiz/category/active/**").authenticated()
-                                .requestMatchers("/image/**","/category/**","/quiz/**","/question/**").authenticated()
+                                .requestMatchers("/quiz/active","quiz/category/active/**","/image/options","/image/question").authenticated()
+                                .requestMatchers("/image/**","/category/**","/quiz/**","/question/**","/test-response/**").authenticated()
                                 .requestMatchers("/register").permitAll())
                 .formLogin(withDefaults())
                 .httpBasic(Customizer.withDefaults());

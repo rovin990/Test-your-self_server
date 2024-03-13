@@ -23,6 +23,7 @@ public class Quiz {
     private int noOfQuestion;
     private boolean isPublished;
     private String category;
+    private int questionLeft;
 
 
     private LocalDate createdDate;

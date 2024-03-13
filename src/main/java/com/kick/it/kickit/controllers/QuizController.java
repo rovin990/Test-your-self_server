@@ -67,6 +67,7 @@ public class QuizController {
                 String currentUserName = authentication.getName();
                 quiz.setCreatedBy(currentUserName);
             }
+            quiz.setQuestionLeft(quiz.getNoOfQuestion());
             quiz.setCreatedDate(LocalDate.now());
             System.out.println("hello "+quiz);
             Quiz local=quizService.saveQuiz(quiz);

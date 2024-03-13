@@ -9,4 +9,6 @@ public interface UserQuizDetailRepository extends JpaRepository<UserQuizDetail,L
 
     public UserQuizDetail findByUsernameAndQuizId(String username,Long quizId);
     public List<UserQuizDetail> findAllByUsername(String username);
+
+    public int countByQuizIdAndUsername(Long quizId,String username);
 }

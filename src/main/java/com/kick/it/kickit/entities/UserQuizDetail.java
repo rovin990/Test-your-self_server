@@ -20,6 +20,8 @@ public class UserQuizDetail {
     private Long id;
     private String username;
     private Long quizId;
+    private String quizTitle;
+    private int attemptNo;
     private int attemptedQuestion;
     private int notAttemptedQuestion;
     private int correctQuestion;
@@ -28,7 +30,7 @@ public class UserQuizDetail {
     private float timeTaken;
 
 
-    @Transient
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Responses> responses;
 
     private LocalDate createdDate;

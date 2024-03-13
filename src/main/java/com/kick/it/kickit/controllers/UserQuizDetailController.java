@@ -36,9 +36,9 @@ public class UserQuizDetailController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllTestResponse(){
+    public ResponseEntity<?> getAllAttemptedQuizResponse(){
         try{
-            List<UserQuizDetail> testResponses=userQuizDetailService.getAllTestResponse();
+            List<UserQuizDetail> testResponses=userQuizDetailService.getAllAttemptedQuizResponse();
             if(testResponses!=null){
                 return ResponseEntity.status(HttpStatus.OK).body(testResponses);
             }

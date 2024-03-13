@@ -11,5 +11,5 @@ public interface UserQuizDetailService {
 
     public UserQuizDetail createTestResponse(UserQuizDetail userQuizDetail);
     public UserQuizDetail getTestResponse(Long quizId);
-    public List<UserQuizDetail> getAllTestResponse();
+    public List<UserQuizDetail> getAllAttemptedQuizResponse();
 }

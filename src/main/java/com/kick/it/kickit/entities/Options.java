@@ -1,9 +1,6 @@
 package com.kick.it.kickit.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -17,5 +14,8 @@ public class Options {
     private String option3;
     private String option4;
     private String option5;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private OptionsImage optionsImage;
 
 }
