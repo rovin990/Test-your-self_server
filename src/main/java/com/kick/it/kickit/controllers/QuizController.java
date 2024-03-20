@@ -24,8 +24,7 @@ public class QuizController {
 
 
     @GetMapping("/{filter}") // fetch or get by titles
-    public ResponseEntity<List<Quiz>> getQuizzes(@PathVariable String filter){
-        ResponseEntity response=null;
+    public ResponseEntity<?> getQuizzes(@PathVariable String filter){
         try{
             List<Quiz> localQuizzes =quizService.getQuizzes().stream().filter(item->{
                 if(filter.equalsIgnoreCase("All"))return true;
@@ -38,12 +37,12 @@ public class QuizController {
                 }
             }).toList();
            // localQuizzes.stream().forEach(System.out::println);
-            response=ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
+            return ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
         }
         catch (Exception e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
-        return response;
     }
     @GetMapping // fetch or get by quizId
     public ResponseEntity<?> getQuizByQuizId(@RequestParam Long quizId){
@@ -59,8 +58,7 @@ public class QuizController {
 
 
     @PostMapping //save
-    public ResponseEntity<Category> saveQuiz(@RequestBody Quiz quiz){
-        ResponseEntity response= null;
+    public ResponseEntity<?> saveQuiz(@RequestBody Quiz quiz){
         try{
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -71,23 +69,20 @@ public class QuizController {
             quiz.setCreatedDate(LocalDate.now());
             System.out.println("hello "+quiz);
             Quiz local=quizService.saveQuiz(quiz);
-            response=ResponseEntity.status(HttpStatus.CREATED).body(local);
+            return ResponseEntity.status(HttpStatus.CREATED).body(local);
         }catch (Exception e){
-            e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
-        return response;
     }
 
     @PutMapping //update
-    public ResponseEntity<Category> updateQuiz(@RequestBody Quiz quiz){
-        ResponseEntity response= null;
+    public ResponseEntity<?> updateQuiz(@RequestBody Quiz quiz){
         try{
             Quiz local=quizService.updateQuiz(quiz);
-            response=ResponseEntity.status(HttpStatus.CREATED).body(local);
+            return ResponseEntity.status(HttpStatus.CREATED).body(local);
         }catch (Exception e){
-            e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
-        return response;
     }
 
     @DeleteMapping("/{qId}") // delete
@@ -99,33 +94,32 @@ public class QuizController {
         }
         catch (Exception e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
         return response;
     }
 
     @GetMapping("/active")
-    public ResponseEntity<List<Quiz>> getActiveQuizzes(){
-        ResponseEntity response=null;
+    public ResponseEntity<?> getActiveQuizzes(){
         try{
             List<Quiz> localQuizzes =quizService.getActiveQuizzes();
-            response=ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
+            return ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
         }
         catch (Exception e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
-        return response;
     }
 
     @GetMapping("/category/active/{category}")
-    public ResponseEntity<List<Quiz>> getCategoryActiveQuizzes(@PathVariable String category){
-        ResponseEntity response=null;
+    public ResponseEntity<?> getCategoryActiveQuizzes(@PathVariable String category){
         try{
             List<Quiz> localQuizzes =quizService.getCategoryActiveQuizzes(category);
-            response=ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
+            return ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
         }
         catch (Exception e){
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
-        return response;
     }
 }
