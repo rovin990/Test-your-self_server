@@ -170,6 +170,7 @@ public class QuestionController {
     @PostMapping(value = "/import",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadQuestionFile(@RequestParam("question_exl") MultipartFile readExcelDataFile){
         try {
+            System.out.println(readExcelDataFile.getName());
             int noOfSavedQuestion=questionService.uploadQuestionFile(readExcelDataFile);
 
             return ResponseEntity.status(HttpStatus.OK).body(noOfSavedQuestion);

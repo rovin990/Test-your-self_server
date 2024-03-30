@@ -99,7 +99,7 @@ public class QuestionServiceImpl implements QuestionService {
         XSSFWorkbook workbook = new XSSFWorkbook(readExcelDataFile.getInputStream());
         XSSFSheet worksheet = workbook.getSheetAt(0);
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
-
+            System.out.println(worksheet.getPhysicalNumberOfRows());
         for(int i=1; i<worksheet.getPhysicalNumberOfRows(); i++) {
             Question tempQuestion = new Question();
 
