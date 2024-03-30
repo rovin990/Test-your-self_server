@@ -72,7 +72,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String generateReceipt() {
-        return UUID.randomUUID().toString();
+        String str =UUID.randomUUID().toString();
+        System.out.println(str);
+        return str;
     }
 
     private String generateSignature(String orderId,String razorPayPaymentId){

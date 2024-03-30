@@ -46,15 +46,16 @@ public class ProjectSecurityConfig {
                         return config;
                     }
                 }))
-                .csrf(csrf-> csrf.csrfTokenRequestHandler(requestAttributeHandler).ignoringRequestMatchers("/register","/image/options","/image/question","/image/category","/image","/category","/quiz","/quiz/**","/question","/question/**","/test-response","/payment/success")
+                .csrf(csrf-> csrf.csrfTokenRequestHandler(requestAttributeHandler).ignoringRequestMatchers("/register")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
-                .authorizeHttpRequests(
+                .authorizeHttpRequests( //more specific url must come first
                         (requests) -> requests
-                                .requestMatchers("/category","/question","/quiz","/user","/image","/test-response").authenticated()
+                                .requestMatchers("/question/import").permitAll()
                                 .requestMatchers("/quiz/active","quiz/category/active/**","/image/options","/image/category","/image/question","/payment/orders","/payment/success").authenticated()
+                                .requestMatchers("/category","/question","/quiz","/user","/image","/test-response").authenticated()
                                 .requestMatchers("/image/**","/category/**","/quiz/**","/question/**","/test-response/**").authenticated()
                                 .requestMatchers("/register").permitAll())
                 .formLogin(withDefaults())

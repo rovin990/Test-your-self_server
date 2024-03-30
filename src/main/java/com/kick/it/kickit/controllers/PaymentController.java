@@ -28,9 +28,9 @@ public class PaymentController {
             JSONObject orderRequest = new JSONObject();
             orderRequest.put("amount",50000);
             orderRequest.put("currency","INR");
-            orderRequest.put("receipt", "receipt#"+paymentService.generateReceipt());
+            orderRequest.put("receipt", paymentService.generateReceipt());
             JSONObject notes = new JSONObject();
-            notes.put("notes_key_1","Tea, Earl Grey, Hot");
+            notes.put("notes_key_1","All module will available");
             orderRequest.put("notes",notes);
 
             Order order = client.orders.create(orderRequest);

@@ -1,4 +1,4 @@
-package com.kick.it.kickit.entities.Exceptions;
+package com.kick.it.kickit.exceptions;
 
 public class InvalidTokenException extends RuntimeException{
 

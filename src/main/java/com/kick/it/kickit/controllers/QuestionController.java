@@ -11,6 +11,9 @@ import com.kick.it.kickit.services.ImageService;
 import com.kick.it.kickit.services.QuestionService;
 import jakarta.persistence.Converter;
 import lombok.SneakyThrows;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -162,6 +166,20 @@ public class QuestionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
         }
     }
+
+    @PostMapping(value = "/import",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadQuestionFile(@RequestParam("question_exl") MultipartFile readExcelDataFile){
+        try {
+            int noOfSavedQuestion=questionService.uploadQuestionFile(readExcelDataFile);
+
+            return ResponseEntity.status(HttpStatus.OK).body(noOfSavedQuestion);
+
+        }catch (IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
+    }
+
+
 
 
 

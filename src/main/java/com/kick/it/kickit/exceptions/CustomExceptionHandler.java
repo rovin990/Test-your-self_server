@@ -1,4 +1,4 @@
-package com.kick.it.kickit.entities.Exceptions;
+package com.kick.it.kickit.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
