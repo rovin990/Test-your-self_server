@@ -16,10 +16,10 @@ public class CsrfCookieFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         System.out.println("csrfToken.getToken()12"+csrfToken.getToken());
-        if(csrfToken.getToken()=="undefined"){
-            CookieCsrfTokenRepository.withHttpOnlyFalse().generateToken(request);
-            System.out.println("csrfToken.getToken()1");
-        }
+//        if(csrfToken.getToken().equalsIgnoreCase("undefined")){
+//            CookieCsrfTokenRepository.withHttpOnlyFalse().generateToken(request);
+//            System.out.println("csrfToken.getToken()1");
+//        }
         if(csrfToken!=null){
             response.setHeader(csrfToken.getHeaderName(), csrfToken.getToken());
             System.out.println(csrfToken.getToken());
