@@ -20,7 +20,9 @@ public class Category {
     private Long cId;
     private String title;
     private String description;
-    private String image;
+    @Lob
+    @Column(name = "image",columnDefinition ="BLOB")
+    private byte[] image;
     private String color;
 
 

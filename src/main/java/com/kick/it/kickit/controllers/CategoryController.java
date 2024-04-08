@@ -1,9 +1,12 @@
 package com.kick.it.kickit.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kick.it.kickit.entities.Category;
+import com.kick.it.kickit.entities.Question;
 import com.kick.it.kickit.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +19,9 @@ public class CategoryController {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @GetMapping("/{filter}") // fetch or get by titles
     public ResponseEntity<List<Category>> getCategories(@PathVariable String filter){
@@ -39,10 +45,12 @@ public class CategoryController {
         return response;
     }
 
-    @PostMapping //save
-    public ResponseEntity<Category> saveCategory(@RequestBody Category category){
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE) //save
+    public ResponseEntity<Category> saveCategory(@RequestParam("category") String categoryJson,@RequestParam("categoryImage") MultipartFile image){
         ResponseEntity response= null;
         try{
+            Category category = objectMapper.readValue(categoryJson, Category.class);
+            category.setImage(image.getBytes());
             Category local=categoryService.saveCategory(category);
             response=ResponseEntity.status(HttpStatus.CREATED).body(local);
         }catch (Exception e){
