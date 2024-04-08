@@ -32,25 +32,29 @@ public class ProjectSecurityConfig {
 
         CsrfTokenRequestAttributeHandler requestAttributeHandler = new CsrfTokenRequestAttributeHandler();
         requestAttributeHandler.setCsrfRequestAttributeName("_csrf");
+        HttpServletRequest httpServletRequest ;
 
         http.securityContext(securityContextConfigurer -> securityContextConfigurer.requireExplicitSave(false))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .cors(cors->cors.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("https://quizmaster.kickthepast.com,http://localhost:3000"));
+                        config.setAllowedOrigins(Collections.singletonList("https://quizmaster.kickthepast.com,http://localhost:3000,http://quizmaster-s3.s3-website-us-east-1.amazonaws.com"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
-                        config.setExposedHeaders(Arrays.asList("Authorization"));
+                        config.setExposedHeaders(Arrays.asList("Authorization,x-xsrf-token"));
                         config.setMaxAge(3600L);
                         return config;
                     }
                 }))
-                .csrf(csrf-> csrf.csrfTokenRequestHandler(requestAttributeHandler).ignoringRequestMatchers("/register")
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .csrf(csrf->csrf.disable())
+//                .csrf(csrf-> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+//                                .csrfTokenRequestHandler(requestAttributeHandler).ignoringRequestMatchers("/register")
+//                        )
+//                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests( //more specific url must come first
@@ -72,36 +76,5 @@ public class ProjectSecurityConfig {
     }
 
 
-    final class SpaCsrfTokenRequestHandler extends CsrfTokenRequestAttributeHandler {
-        private final CsrfTokenRequestHandler delegate = new XorCsrfTokenRequestAttributeHandler();
 
-        @Override
-        public void handle(HttpServletRequest request, HttpServletResponse response, Supplier<CsrfToken> csrfToken) {
-            /*
-             * Always use XorCsrfTokenRequestAttributeHandler to provide BREACH protection of
-             * the CsrfToken when it is rendered in the response body.
-             */
-            this.delegate.handle(request, response, csrfToken);
-        }
-
-        @Override
-        public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
-            /*
-             * If the request contains a request header, use CsrfTokenRequestAttributeHandler
-             * to resolve the CsrfToken. This applies when a single-page application includes
-             * the header value automatically, which was obtained via a cookie containing the
-             * raw CsrfToken.
-             */
-            if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
-                return super.resolveCsrfTokenValue(request, csrfToken);
-            }
-            /*
-             * In all other cases (e.g. if the request contains a request parameter), use
-             * XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
-             * when a server-side rendered form includes the _csrf request parameter as a
-             * hidden input.
-             */
-            return this.delegate.resolveCsrfTokenValue(request, csrfToken);
-        }
-    }
 }
