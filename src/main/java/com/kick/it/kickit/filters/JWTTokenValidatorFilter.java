@@ -21,7 +21,9 @@ import java.nio.charset.StandardCharsets;
 public class JWTTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String jwt = request.getHeader(Security_Constant.JWT_HEADER);
+        String jwt = request.getHeader(Security_Constant.JWT_HEADER).split(" ")[1];
+
+        System.out.println("Jwt token in validator "+jwt);
         if (null != jwt) {
             try {
                 SecretKey key = Keys.hmacShaKeyFor(
@@ -55,6 +57,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
+        if(request.getServletPath().equals("/register"))return true;
         return request.getServletPath().equals("/user");
     }
 
