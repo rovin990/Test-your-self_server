@@ -5,6 +5,8 @@ import com.kick.it.kickit.filters.JWTTokenGeneratorFilter;
 import com.kick.it.kickit.filters.JWTTokenValidatorFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -13,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.*;
 import org.springframework.util.StringUtils;
@@ -27,6 +30,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class ProjectSecurityConfig {
+
+    @Autowired
+    @Qualifier("delegatedAuthenticationEntryPoint")
+    DelegatedAuthenticationEntryPoint authEntryPoint;
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
@@ -41,11 +49,11 @@ public class ProjectSecurityConfig {
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("https://quizmaster.kickthepast.com,http://localhost:3000,http://quizmaster-s3.s3-website-us-east-1.amazonaws.com"));
+                        config.setAllowedOrigins(Collections.singletonList("https://quizmaster.kickthepast.com,https://examsphere.kickthepast.com,http://localhost:3000,http://quizmaster-s3.s3-website-us-east-1.amazonaws.com"));
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
-                        config.setExposedHeaders(Arrays.asList("Authorization,x-xsrf-token"));
+                        config.setExposedHeaders(Arrays.asList("Authorization"));
                         config.setMaxAge(3600L);
                         return config;
                     }
@@ -63,9 +71,11 @@ public class ProjectSecurityConfig {
                                 .requestMatchers("/quiz/active","quiz/category/active/**","/image/options","/image/category","/image/question","/payment/orders","/payment/success").authenticated()
                                 .requestMatchers("/category","/question","/quiz","/user","/image","/test-response").authenticated()
                                 .requestMatchers("/image/**","/category/**","/quiz/**","/question/**","/test-response/**").authenticated()
-                                .requestMatchers("/register").permitAll())
+                                .requestMatchers("/register","/contact-us").permitAll())
                 .formLogin(withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(basic-> basic.authenticationEntryPoint(authEntryPoint))
+                .exceptionHandling(Customizer.withDefaults());
+
         return http.build();
 
     }
