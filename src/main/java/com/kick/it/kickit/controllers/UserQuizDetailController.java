@@ -5,14 +5,9 @@ import com.kick.it.kickit.services.UserQuizDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/test-response")
@@ -20,12 +15,12 @@ public class UserQuizDetailController {
     @Autowired
     UserQuizDetailService userQuizDetailService;
 
-    @GetMapping("/{quizId}")
-    public ResponseEntity<?> getTestResponse(@PathVariable Long quizId){
+    @GetMapping("/{quizId}/{attemptNo}")
+    public ResponseEntity<?> getTestResponse(@PathVariable Long quizId,@PathVariable int attemptNo){
         try{
-            UserQuizDetail local=userQuizDetailService.getTestResponse(quizId);
-            if(local!=null){
-                return ResponseEntity.status(HttpStatus.OK).body(local);
+            List<UserQuizDetail> localList=userQuizDetailService.getTestResponse(quizId,attemptNo);
+            if(localList.size()>0){
+                return ResponseEntity.status(HttpStatus.OK).body(localList);
             }
             else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no test response with given quizId : "+quizId);
@@ -65,5 +60,17 @@ public class UserQuizDetailController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
         return null;
+    }
+
+    @GetMapping("/rankers")
+    public ResponseEntity<?> getRankerByQuizId(@RequestParam("quizId") Long quizId,@RequestParam("attemptNo") int attemptNo){
+        try{
+            System.out.println("quixId"+quizId+" attemptNo "+attemptNo);
+            List<UserQuizDetail> response = userQuizDetailService.getAllTestResponseForRanking(quizId, attemptNo);
+
+            return  ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 }

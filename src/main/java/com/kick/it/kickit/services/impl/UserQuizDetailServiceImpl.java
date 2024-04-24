@@ -14,9 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserQuizDetailServiceImpl implements UserQuizDetailService {
@@ -37,6 +35,7 @@ public class UserQuizDetailServiceImpl implements UserQuizDetailService {
 
         //System.out.println("Hello"+principal.getName());
 
+
         userQuizDetail.setCreatedBy(principal.getName());
         userQuizDetail.setUsername(principal.getName());
         userQuizDetail.setCreatedDate(LocalDate.now());
@@ -50,15 +49,20 @@ public class UserQuizDetailServiceImpl implements UserQuizDetailService {
     }
 
     @Override
-    public UserQuizDetail getTestResponse(Long quizId) {
+    public List<UserQuizDetail> getTestResponse(Long quizId,int attemptNo) {
         Authentication principal =SecurityContextHolder.getContext().getAuthentication();
-        return userQuizDetailRepository.findByUsernameAndQuizId(principal.getName(),quizId);
+        return userQuizDetailRepository.findByUsernameAndQuizIdAndAttemptNo(principal.getName(),quizId,attemptNo);
     }
 
     @Override
     public List<UserQuizDetail> getAllAttemptedQuizResponse() {
         Authentication principal =SecurityContextHolder.getContext().getAuthentication();
         return userQuizDetailRepository.findAllByUsername(principal.getName());
+    }
+
+    @Override
+    public List<UserQuizDetail> getAllTestResponseForRanking(Long quizId, int attemptNo) {
+        return userQuizDetailRepository.findByQuizIdAndAttemptNo(quizId,attemptNo);
     }
 
     private void getScoreWithCorrectAndWrongNoOfQuestion(UserQuizDetail userQuizDetail){

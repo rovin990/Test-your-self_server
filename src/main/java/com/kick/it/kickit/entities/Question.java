@@ -15,6 +15,9 @@ public class Question {
     @Column(length = 1000)
     private String title;
 
+    @Column(length = 3000)
+    private String code;
+
 //    @Transient
 //    private byte[] questionImgData;
 //    @OneToMany(cascade = CascadeType.ALL)

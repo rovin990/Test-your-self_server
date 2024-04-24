@@ -1,24 +1,18 @@
 package com.kick.it.kickit.controllers;
 
 import com.kick.it.kickit.entities.Customer;
-import com.kick.it.kickit.entities.Role;
 import com.kick.it.kickit.repository.CustomerRepository;
 import com.kick.it.kickit.repository.RoleRepo;
-import com.kick.it.kickit.responses.UserResponse;
 import com.kick.it.kickit.services.QuestionService;
 import com.kick.it.kickit.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -65,6 +59,4 @@ public class LoginController {
             return null;
         }
     }
-
-
 }

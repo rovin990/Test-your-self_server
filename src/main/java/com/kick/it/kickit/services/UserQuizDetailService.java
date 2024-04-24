@@ -10,6 +10,7 @@ public interface UserQuizDetailService {
 
 
     public UserQuizDetail createTestResponse(UserQuizDetail userQuizDetail);
-    public UserQuizDetail getTestResponse(Long quizId);
+    public List<UserQuizDetail> getTestResponse(Long quizId,int attemptNo);
     public List<UserQuizDetail> getAllAttemptedQuizResponse();
+    public List<UserQuizDetail> getAllTestResponseForRanking(Long quizId,int attemptNo);
 }

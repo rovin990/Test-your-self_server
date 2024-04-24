@@ -19,6 +19,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cId;
     private String title;
+
+    @Column(length = 1000)
     private String description;
     @Lob
     @Column(name = "image",columnDefinition ="BLOB")

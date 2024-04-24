@@ -118,7 +118,7 @@ public class QuestionController {
         return response;
     }
 
-    @PutMapping("/")
+    @PostMapping("/withoutimage")
     public ResponseEntity<QuestionResponse> createQuestionWithOutImages(@RequestParam("question") String questionStr) throws JsonProcessingException {
         QuestionResponse questionResponse=new QuestionResponse();
         Question question=objectMapper.readValue(questionStr,Question.class);
