@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 public class JWTTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String jwt = request.getHeader(Security_Constant.JWT_HEADER).split(" ")[1];
+        String jwt = request.getHeader(Security_Constant.JWT_HEADER).split(" ")[1].trim();
 
         System.out.println("Jwt token in validator "+jwt);
         if (null != jwt) {
