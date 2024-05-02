@@ -4,6 +4,8 @@ import com.kick.it.kickit.entities.Quiz;
 import com.kick.it.kickit.repository.QuizRepository;
 import com.kick.it.kickit.services.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,8 @@ public class QuizServiceImpl implements QuizService {
 
     @Autowired
     QuizRepository quizRepository;
+
+
 
     @Override
     public Quiz saveQuiz(Quiz quiz) {
@@ -26,7 +30,12 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public List<Quiz> getQuizzes() {
-        return quizRepository.findAll();
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        if(principal.getName().substring(0,11).equalsIgnoreCase("masterAdmin")){
+            return quizRepository.findAll();
+        }
+        //System.out.println(quizRepository.findAll().stream().filter(quiz -> quiz.getCreatedBy().equalsIgnoreCase(principal.getName())).toList());
+        return quizRepository.findAll().stream().filter(quiz -> quiz.getCreatedBy().equalsIgnoreCase(principal.getName())).toList();
     }
 
     @Override
@@ -41,11 +50,19 @@ public class QuizServiceImpl implements QuizService {
 
     @Override
     public List<Quiz> getActiveQuizzes() {
-        return quizRepository.findByIsPublished(true);
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        if(principal.getName().substring(0,11).equalsIgnoreCase("masterAdmin")){
+            return quizRepository.findByIsPublished(true);
+        }
+        return quizRepository.findByIsPublished(true).stream().filter(quiz -> quiz.getCreatedBy().equalsIgnoreCase(principal.getName())).toList();
     }
 
     @Override
     public List<Quiz> getCategoryActiveQuizzes(String category) {
-        return quizRepository.findByCategoryAndIsPublished(category,true);
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        if(principal.getName().substring(0,11).equalsIgnoreCase("masterAdmin")){
+            return quizRepository.findByCategoryAndIsPublished(category,true);
+        }
+        return quizRepository.findByCategoryAndIsPublished(category,true).stream().filter(quiz -> quiz.getCreatedBy().equalsIgnoreCase(principal.getName())).toList();
     }
 }

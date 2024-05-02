@@ -42,7 +42,11 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> getQuestions() {
-        return questionRepo.findAll();
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        if(principal.getName().substring(0,11).equalsIgnoreCase("masterAdmin")){
+            return questionRepo.findAll();
+        }
+        return questionRepo.findAll().stream().filter(question -> question.getCreatedBy().equalsIgnoreCase(principal.getName())).toList();
     }
 
     @Override
@@ -87,9 +91,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void addToQuiz(String[] quizIds) {
         for(String quizId : quizIds){
-            Quiz local=quizRepository.findById(Long.getLong(quizId)).get();
+            System.out.println(Long.parseLong(quizId));
+            Quiz local=quizRepository.findById(Long.parseLong(quizId)).get();
 
-            local.setQuestionLeft(local.getQuestionLeft()+1);
+            local.setQuestionLeft(local.getQuestionLeft()-1);
+            quizRepository.save(local);
+
+            System.out.println("Local "+local);
         }
     }
 

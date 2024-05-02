@@ -72,8 +72,6 @@ public class QuestionController {
                                                        @RequestParam("formImages")MultipartFile... formImages) throws JsonProcessingException {
         QuestionResponse questionResponse=new QuestionResponse();
         Question question=objectMapper.readValue(questionStr,Question.class);
-//        Question(id=null, title=Test, explanation=Tesst, answer=apptitude.png, questionType=, isImageOps=false, examTags=[test], options=Options(id=null, option1=apptitude.png, option2=core_java.png, option3=dart-board.png, option4=document.png, option5=null, optionsImage=null), questionImage=null, topic=tst, subject=test, quizList=[28], createdDate=null, createdBy=null, updatedDate=null, updatedBy=null)
-//        {"title":"Test","explanation":"Tesst","answer":"apptitude.png","questionType":"","options":{"option1":"apptitude.png","option2":"core_java.png","option3":"dart-board.png","option4":"document.png"},"examTags":["test"],"topic":"tst","subject":"test","quizList":[28],"image":"java_stream.png","isImageOps":true}
 
         ResponseEntity response=null;
         try{
@@ -84,9 +82,9 @@ public class QuestionController {
                 question.setCreatedBy(principal.getName());
                 if(formImages.length==1 || formImages.length>0)question.setQuestionImage(new QuestionImage(formImages[0].getOriginalFilename(),formImages[0].getBytes()));
                 if(formImages.length==5){
-                    System.out.println(formImages[1]);
-                    System.out.println(formImages[2]);
-                    System.out.println(formImages[3]);
+//                    System.out.println(formImages[1]);
+//                    System.out.println(formImages[2]);
+//                    System.out.println(formImages[3]);
                     question.getOptions().setOptionsImage(new OptionsImage(formImages[1].getBytes(),formImages[2].getBytes(),formImages[3].getBytes(),formImages[4].getBytes()));
                 }
 
@@ -129,8 +127,14 @@ public class QuestionController {
                 System.out.println("New question "+question);
                 question.setCreatedDate(LocalDate.now());
                 question.setCreatedBy(principal.getName());
+
                 questionService.saveQuestion(question);
 
+                //update quiz
+                String[] quizIds = question.getQuizIds().split(",");
+                System.out.println("quizIds"+quizIds);
+                questionService.addToQuiz(quizIds);
+                System.out.println("Quiz updated");
                 List<Question> listUpdate= new ArrayList<>();
                 listUpdate.add(question);
                 questionResponse.setQuestionList(listUpdate);
