@@ -100,9 +100,10 @@ public class QuizController {
     }
 
     @GetMapping("/active")
-    public ResponseEntity<?> getActiveQuizzes(){
+    public ResponseEntity<?> getActiveQuizzesAdmin(){
+        List<Quiz> localQuizzes=null;
         try{
-            List<Quiz> localQuizzes =quizService.getActiveQuizzes();
+            localQuizzes =quizService.getActiveQuizzesAdmin();
             return ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
         }
         catch (Exception e){
@@ -112,9 +113,37 @@ public class QuizController {
     }
 
     @GetMapping("/category/active/{category}")
-    public ResponseEntity<?> getCategoryActiveQuizzes(@PathVariable String category){
+    public ResponseEntity<?> getCategoryActiveQuizzesAdmin(@PathVariable String category){
+        List<Quiz> localQuizzes=null;
         try{
-            List<Quiz> localQuizzes =quizService.getCategoryActiveQuizzes(category);
+            localQuizzes =quizService.getCategoryActiveQuizzesAdmin(category);
+            return ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
+    @GetMapping("/active/user")
+    public ResponseEntity<?> getActiveQuizzesUser(){
+        List<Quiz> localQuizzes=null;
+        try{
+            localQuizzes =quizService.getActiveQuizzesUser();
+            return ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
+
+    @GetMapping("/category/active/user/{category}")
+    public ResponseEntity<?> getCategoryActiveQuizzesUser(@PathVariable String category){
+        List<Quiz> localQuizzes=null;
+        try{
+            localQuizzes =quizService.getCategoryActiveQuizzesUser(category);
             return ResponseEntity.status(HttpStatus.OK).body(localQuizzes);
         }
         catch (Exception e){

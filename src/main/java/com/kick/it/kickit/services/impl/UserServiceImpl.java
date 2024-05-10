@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -34,6 +35,12 @@ public class UserServiceImpl implements UserService {
                 String hashPassword=this.passwordEncoder.encode(customer.getPassword());
                 customer.setPassword(hashPassword);
                 customer.setCreatedAt(new Date(System.currentTimeMillis()));
+
+                //setting role to Normal user
+                Set<Role> roleSet = new HashSet<>();
+                Role role= new Role("USER",customer);
+                roleSet.add(role);
+                customer.setRoles(roleSet);
                 local = customerRepository.save(customer);
              }
         return local;

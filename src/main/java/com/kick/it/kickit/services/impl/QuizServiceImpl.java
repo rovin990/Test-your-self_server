@@ -49,7 +49,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getActiveQuizzes() {
+    public List<Quiz> getActiveQuizzesAdmin() {
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
         if(principal.getName().substring(0,11).equalsIgnoreCase("masterAdmin")){
             return quizRepository.findByIsPublished(true);
@@ -58,11 +58,23 @@ public class QuizServiceImpl implements QuizService {
     }
 
     @Override
-    public List<Quiz> getCategoryActiveQuizzes(String category) {
+    public List<Quiz> getCategoryActiveQuizzesAdmin(String category) {
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
         if(principal.getName().substring(0,11).equalsIgnoreCase("masterAdmin")){
             return quizRepository.findByCategoryAndIsPublished(category,true);
         }
         return quizRepository.findByCategoryAndIsPublished(category,true).stream().filter(quiz -> quiz.getCreatedBy().equalsIgnoreCase(principal.getName())).toList();
     }
+
+    @Override
+    public List<Quiz> getActiveQuizzesUser() {
+        return quizRepository.findByIsPublished(true);
+    }
+
+    @Override
+    public List<Quiz> getCategoryActiveQuizzesUser(String category) {
+        return quizRepository.findByCategoryAndIsPublished(category,true);
+    }
+
+
 }

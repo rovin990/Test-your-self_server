@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "roles")
-
 public class Role {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int rId;
     private String name;
@@ -23,11 +23,11 @@ public class Role {
         this.customer = customer;
     }
 
-    public int getrId() {
+    public int getRId() {
         return rId;
     }
 
-    public void setrId(int rId) {
+    public void setRId(int rId) {
         this.rId = rId;
     }
 

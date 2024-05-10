@@ -67,7 +67,7 @@ public class ProjectSecurityConfig {
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests( //more specific url must come first
                         (requests) -> requests
-                                .requestMatchers("/question/import").authenticated()
+                                .requestMatchers("/question/import","/active/user","/category/active/user/**").authenticated()
                                 .requestMatchers("/quiz/active","quiz/category/active/**","/image/options","/image/category","/image/question","/payment/orders","/payment/success").authenticated()
                                 .requestMatchers("/category","/question","/quiz","/user","/image","/test-response").authenticated()
                                 .requestMatchers("/image/**","/category/**","/quiz/**","/question/**","/test-response/**").authenticated()
